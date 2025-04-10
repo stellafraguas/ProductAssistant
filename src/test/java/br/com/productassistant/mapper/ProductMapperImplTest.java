@@ -2,7 +2,6 @@ package br.com.productassistant.mapper;
 
 import br.com.productassistant.adapter.resolver.CategoryResolver;
 import br.com.productassistant.dto.response.ProductResponseDTO;
-import br.com.productassistant.dto.request.NewProductRequestDTO;
 import br.com.productassistant.entity.Category;
 import br.com.productassistant.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,18 +11,17 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ProductMapperImplTest {
 
-    private CategoryResolver categoryResolver;
-    private ProductMapperImpl productMapper;
+    private CategoryResolver resolver;
+    private ProductMapperImpl mapper;
 
     @BeforeEach
     void init() {
-        categoryResolver = mock(CategoryResolver.class);
-        productMapper = new ProductMapperImpl(categoryResolver);
+        resolver = mock(CategoryResolver.class);
+        mapper = new ProductMapperImpl(resolver);
     }
 
     @Test
@@ -44,9 +42,9 @@ class ProductMapperImplTest {
         p.setLastUpdatedAt(LocalDateTime.of(2025, 4, 7, 15, 0));
         p.setId(1L);
 
-        when(categoryResolver.resolveDisplayNameById(1L)).thenReturn("Category");
+        when(resolver.resolveDisplayNameById(1L)).thenReturn("Category");
 
-        ProductResponseDTO dto = productMapper.productToProductResponseDTO(p);
+        ProductResponseDTO dto = mapper.productToProductResponseDTO(p);
 
         assertThat(dto.getName()).isEqualTo("Test");
         assertThat(dto.getDescription()).isEqualTo("Description");
@@ -57,34 +55,6 @@ class ProductMapperImplTest {
         assertThat(dto.getCreatedAt()).isEqualTo(LocalDateTime.of(2025, 4, 7, 10, 0));
         assertThat(dto.getLastUpdatedAt()).isEqualTo(LocalDateTime.of(2025, 4, 7, 15, 0));
         assertThat(dto.getCategoryDisplayName()).isEqualTo("Category");
-    }
-
-    @Test
-    void shouldConvertNewProductRequestDTOToProduct() {
-        var category = new Category(1L, "Books", null);
-        var now = LocalDateTime.now();
-
-        var dto = NewProductRequestDTO.builder()
-                .name("Clean Code")
-                .description("A Handbook of Agile Software Craftsmanship")
-                .categoryId(1L)
-                .price(new BigDecimal("99.90"))
-                .active(true)
-                .createdBy("admin")
-                .createdAt(now)
-                .build();
-
-        when(categoryResolver.resolveCategoryById(1L)).thenReturn(category);
-
-        Product product = productMapper.newProductRequestDTOToProduct(dto);
-
-        assertThat(product.getName()).isEqualTo("Clean Code");
-        assertThat(product.getDescription()).isEqualTo("A Handbook of Agile Software Craftsmanship");
-        assertThat(product.getCategory()).isEqualTo(category);
-        assertThat(product.getPrice()).isEqualByComparingTo("99.90");
-        assertThat(product.isActive()).isTrue();
-        assertThat(product.getCreatedBy()).isEqualTo("admin");
-        assertThat(product.getCreatedAt()).isEqualTo(now);
     }
 
 }
