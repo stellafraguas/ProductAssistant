@@ -1,7 +1,7 @@
 package br.com.productassistant.service;
 
-import br.com.productassistant.adapter.resolver.CategoryResolver;
 import br.com.productassistant.dto.response.ProductResponseDTO;
+import br.com.productassistant.dto.request.NewProductRequestDTO;
 import br.com.productassistant.entity.Product;
 import br.com.productassistant.mapper.ProductMapper;
 import br.com.productassistant.repository.ProductRepository;
@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +65,34 @@ class ProductServiceImplTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getName()).isEqualTo("Test");
+    }
+
+    @Test
+    void createProduct_shouldPersistMappedEntity() {
+        NewProductRequestDTO dto = validNewProductRequest();
+
+        Product entity = new Product();
+        entity.setName(dto.getName());
+
+        when(mapper.newProductRequestDTOToProduct(dto)).thenReturn(entity);
+        when(repository.saveAndFlush(entity)).thenReturn(entity);
+
+        service.createProduct(dto);
+
+        verify(repository).saveAndFlush(entity);
+    }
+
+    NewProductRequestDTO validNewProductRequest() {
+        return NewProductRequestDTO.builder()
+                .name("Test")
+                .description("Product description")
+                .categoryId(1L)
+                .categoryDisplayName("Category")
+                .price(BigDecimal.valueOf(123.45))
+                .active(true)
+                .createdBy("tester")
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
 }

@@ -1,6 +1,8 @@
 package br.com.productassistant.adapter.resolver;
 
+import br.com.productassistant.entity.Category;
 import br.com.productassistant.entity.CategoryView;
+import br.com.productassistant.repository.CategoryRepository;
 import br.com.productassistant.repository.CategoryViewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,9 @@ class CategoryResolverImplTest {
 
     @Mock
     private CategoryViewRepository categoryViewRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @InjectMocks
     private CategoryResolverImpl resolver;
@@ -41,6 +46,25 @@ class CategoryResolverImplTest {
         when(categoryViewRepository.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> resolver.resolveDisplayNameById(2L));
+    }
+
+    @Test
+    void resolveCategory_returnsCategory() {
+        Category category = new Category();
+        category.setName("Fruits");
+
+        when(categoryRepository.findById(3L)).thenReturn(Optional.of(category));
+
+        Category result = resolver.resolveCategoryById(3L);
+
+        assertThat(result.getName()).isEqualTo("Fruits");
+    }
+
+    @Test
+    void resolveCategory_throwsIfNotFound() {
+        when(categoryRepository.findById(4L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> resolver.resolveCategoryById(4L));
     }
 
 }
