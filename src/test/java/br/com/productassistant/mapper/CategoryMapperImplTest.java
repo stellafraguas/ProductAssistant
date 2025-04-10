@@ -20,11 +20,11 @@ class CategoryMapperImplTest {
     void shouldMapCategoryViewToCategoryResponseDTO() {
         CategoryView categoryView = new CategoryView();
         categoryView.setId(1L);
-        categoryView.setDisplayName("Category");
+        categoryView.setDisplayName("Books");
 
         CategoryResponseDTO dto = mapper.toDTO(categoryView);
 
         assertEquals(1L, dto.getCategoryId());
-        assertEquals("Category", dto.getCategoryDisplayName());
+        assertEquals("Books", dto.getCategoryDisplayName());
     }
 }

@@ -1,5 +1,6 @@
 package br.com.productassistant.controller;
 
+import br.com.productassistant.config.SecurityConfig;
 import br.com.productassistant.service.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
-@Import(CategoryControllerTest.Config.class)
+@Import({CategoryControllerTest.Config.class, SecurityConfig.class})
 class CategoryControllerTest {
 
     @TestConfiguration

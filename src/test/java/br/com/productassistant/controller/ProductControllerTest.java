@@ -1,5 +1,6 @@
 package br.com.productassistant.controller;
 
+import br.com.productassistant.config.SecurityConfig;
 import br.com.productassistant.dto.request.UpdateProductRequestDTO;
 import br.com.productassistant.dto.response.ProductResponseDTO;
 import br.com.productassistant.dto.request.NewProductRequestDTO;
@@ -18,15 +19,20 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-@Import(ProductControllerTest.Config.class)
+@Import({ProductControllerTest.Config.class, SecurityConfig.class})
 class ProductControllerTest {
 
     @TestConfiguration
@@ -119,6 +125,22 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteOk() throws Exception {
+        doNothing().when(productService).deleteProductById(1L);
+        mockMvc.perform(delete("/api/products/1")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        doThrow(new RuntimeException("Not found")).when(productService).deleteProductById(1L);
+        mockMvc.perform(delete("/api/products/1")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isNotFound());
     }
 
     private NewProductRequestDTO validNewRequest() {

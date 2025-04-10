@@ -73,4 +73,14 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @Override
+    public void deleteProductById(Long id) {
+        LOGGER.info("Attempting to delete product with id: {}", id);
+        if (!productRepository.existsById(id)) {
+            LOGGER.warn("Product not found: {}", id);
+            throw new EntityNotFoundException("Product with id " + id + " not found");
+        }
+        productRepository.deleteById(id);
+        LOGGER.info("Product deleted: {}", id);
+    }
 }
