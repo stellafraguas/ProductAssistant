@@ -1,5 +1,6 @@
 package br.com.productassistant.service;
 
+import br.com.productassistant.dto.request.UpdateProductRequestDTO;
 import br.com.productassistant.dto.response.ProductResponseDTO;
 import br.com.productassistant.dto.request.NewProductRequestDTO;
 
@@ -11,4 +12,5 @@ public interface ProductService {
 
     void createProduct(NewProductRequestDTO newProductRequestDTO);
 
+    void updateProduct(Long productId, UpdateProductRequestDTO updateProductRequestDTO);
 }

@@ -1,5 +1,6 @@
 package br.com.productassistant.controller;
 
+import br.com.productassistant.dto.request.UpdateProductRequestDTO;
 import br.com.productassistant.dto.response.ProductResponseDTO;
 import br.com.productassistant.dto.request.NewProductRequestDTO;
 import br.com.productassistant.service.ProductService;
@@ -19,8 +20,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -94,6 +95,32 @@ class ProductControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void update() throws Exception {
+        UpdateProductRequestDTO request = validUpdateRequest();
+        mockMvc.perform(put("/api/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateBadRequest() throws Exception {
+        UpdateProductRequestDTO request = UpdateProductRequestDTO.builder()
+                .description("Description")
+                .categoryId(1L)
+                .categoryDisplayName("Category")
+                .price(new BigDecimal("29.99"))
+                .active(false)
+                .lastUpdatedBy("editor")
+                .lastUpdatedAt(LocalDateTime.now())
+                .build();
+        mockMvc.perform(put("/api/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
     private NewProductRequestDTO validNewRequest() {
         return NewProductRequestDTO.builder()
                 .name("Test Product")
@@ -104,6 +131,19 @@ class ProductControllerTest {
                 .active(true)
                 .createdBy("tester")
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private UpdateProductRequestDTO validUpdateRequest() {
+        return UpdateProductRequestDTO.builder()
+                .name("Updated Product")
+                .description("Updated Description")
+                .categoryId(1L)
+                .categoryDisplayName("Category")
+                .price(new BigDecimal("29.99"))
+                .active(false)
+                .lastUpdatedBy("editor")
+                .lastUpdatedAt(LocalDateTime.now())
                 .build();
     }
 
