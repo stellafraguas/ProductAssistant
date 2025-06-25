@@ -1,7 +1,7 @@
 package br.com.productassistant.mapper;
 
 import br.com.productassistant.dto.response.CategoryResponseDTO;
-import br.com.productassistant.entity.CategoryView;
+import br.com.productassistant.entity.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +17,12 @@ class CategoryMapperImplTest {
     }
 
     @Test
-    void shouldMapCategoryViewToCategoryResponseDTO() {
-        CategoryView categoryView = new CategoryView();
-        categoryView.setId(1L);
-        categoryView.setDisplayName("Books");
+    void shouldMapCategoryToCategoryResponseDTO() {
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("Books");
 
-        CategoryResponseDTO dto = mapper.toDTO(categoryView);
+        CategoryResponseDTO dto = mapper.toDTO(category);
 
         assertEquals(1L, dto.getCategoryId());
         assertEquals("Books", dto.getCategoryDisplayName());

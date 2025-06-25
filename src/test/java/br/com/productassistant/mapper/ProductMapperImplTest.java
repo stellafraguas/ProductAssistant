@@ -42,8 +42,6 @@ class ProductMapperImplTest {
         p.setLastUpdatedAt(LocalDateTime.of(2025, 4, 7, 15, 0));
         p.setId(1L);
 
-        when(resolver.resolveDisplayNameById(1L)).thenReturn("Category");
-
         ProductResponseDTO dto = mapper.productToProductResponseDTO(p);
 
         assertThat(dto.getName()).isEqualTo("Test");
@@ -54,7 +52,7 @@ class ProductMapperImplTest {
         assertThat(dto.getLastUpdatedBy()).isEqualTo("editor");
         assertThat(dto.getCreatedAt()).isEqualTo(LocalDateTime.of(2025, 4, 7, 10, 0));
         assertThat(dto.getLastUpdatedAt()).isEqualTo(LocalDateTime.of(2025, 4, 7, 15, 0));
-        assertThat(dto.getCategoryDisplayName()).isEqualTo("Category");
+        assertThat(dto.getCategoryDisplayName()).isEqualTo("Test");
     }
 
 }

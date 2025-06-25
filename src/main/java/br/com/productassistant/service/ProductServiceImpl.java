@@ -8,6 +8,7 @@ import br.com.productassistant.entity.Product;
 import br.com.productassistant.mapper.ProductMapper;
 import br.com.productassistant.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
@@ -22,12 +24,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryResolver categoryResolver;
-
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, CategoryResolver categoryResolver) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-        this.categoryResolver = categoryResolver;
-    }
 
     @Override
     public List<ProductResponseDTO> getAllProducts() {
