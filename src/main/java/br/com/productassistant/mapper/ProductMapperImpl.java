@@ -5,16 +5,14 @@ import br.com.productassistant.dto.response.ProductResponseDTO;
 import br.com.productassistant.dto.request.NewProductRequestDTO;
 import br.com.productassistant.entity.Category;
 import br.com.productassistant.entity.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ProductMapperImpl implements ProductMapper{
 
     private final CategoryResolver categoryResolver;
-
-    public ProductMapperImpl(CategoryResolver categoryResolver) {
-        this.categoryResolver = categoryResolver;
-    }
 
     public ProductResponseDTO productToProductResponseDTO(Product product){
         Category category = product.getCategory();
@@ -23,7 +21,7 @@ public class ProductMapperImpl implements ProductMapper{
                 .name(product.getName())
                 .description(product.getDescription())
                 .categoryId(category.getId())
-                .categoryDisplayName(categoryResolver.resolveDisplayNameById(product.getCategory().getId()))
+                .categoryDisplayName(category.getDisplayName())
                 .price(product.getPrice())
                 .active(product.isActive())
                 .createdBy(product.getCreatedBy())

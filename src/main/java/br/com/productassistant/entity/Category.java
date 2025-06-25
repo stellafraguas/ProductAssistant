@@ -32,4 +32,14 @@ public class Category {
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(name = "fk_category_parent"))
     private Category parent;
 
+    public String getDisplayName(){
+        StringBuilder displayName = new StringBuilder(name);
+        Category category = parent;
+        while (category != null){
+            displayName.insert(0, parent.getName() + " > ");
+            category = category.getParent();
+        }
+        return displayName.toString();
+    }
+
 }
